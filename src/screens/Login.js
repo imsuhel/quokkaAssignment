@@ -1,101 +1,96 @@
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   TextInput,
-  StatusBar,
+  Alert,
+  ActionSheetIOS,
 } from 'react-native';
-import React from 'react';
-import GlobalStyle from '../utils/GlobalStyle';
-import {Formik} from 'formik';
-import ButtonContain from '../components/ButtonContain';
+import React, {useState} from 'react';
+import GStyles from '../utils/GStyles';
+import Ripple from 'react-native-material-ripple';
+import ButtonPrimary from '../components/ButtonPrimary';
 import {useNavigation} from '@react-navigation/native';
-import ButtonOutline from '../components/ButtonOutline';
-import {useDispatch, useSelector} from 'react-redux';
-import Loading from '../components/Loading';
-import {userLogin} from '../redux/slice/auth';
+import isValidEmail from '../utils/isValidEmail';
 
 const Login = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const authState = useSelector(state => state.auth);
+  const [activeInput, setActiveInput] = useState(false);
+  const [email, setEmail] = useState('');
 
-  authState.userData ? navigation.navigate('dashboard') : null;
-
+  const _handleLogin = async () => {
+    if (isValidEmail(email)) {
+      navigation.navigate('LoginOtp');
+    } else {
+      Alert.alert('warning', 'Email is not valid');
+    }
+  };
   return (
-    <View style={[GlobalStyle.screenStyle, {justifyContent: 'flex-end'}]}>
-      {authState.isLoading && <Loading />}
-      <StatusBar backgroundColor="#00b5c5" barStyle="dark-content" />
+    <View style={GStyles.screenStyle}>
       <Image
-        source={require('../imgs/loginBg.jpg')}
-        style={internalStyle.imgStyle}
+        source={require('../images/screenBG.png')}
+        style={GStyles.screenBackgrond}
       />
-      <Formik
-        initialValues={{email: '', password: ''}}
-        onSubmit={values => dispatch(userLogin(values))}>
-        {({handleChange, handleBlur, handleSubmit, values}) => (
-          <View style={[GlobalStyle.px15, internalStyle.cardStyle]}>
-            <Text
-              style={[
-                GlobalStyle.bigTxt,
-                {color: GlobalStyle.blueColor, marginBottom: 20},
-              ]}>
-              Login
-            </Text>
+      <View
+        style={[GStyles.row, GStyles.px15, {marginBottom: 20, paddingTop: 50}]}>
+        <Ripple
+          style={{borderRadius: 50, overflow: 'hidden', width: 40, height: 40}}>
+          <Image
+            source={require('../images/backButton.png')}
+            style={{width: 40, height: 40, resizeMode: 'contain'}}
+          />
+        </Ripple>
+        <Ripple
+          style={{
+            borderRadius: 50,
+            overflow: 'hidden',
+            alignSelf: 'center',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}>
+          <Image
+            source={require('../images/socialBloxicon.png')}
+            style={{width: 50, height: 50, resizeMode: 'contain'}}
+          />
+        </Ripple>
+      </View>
+      <Text style={[GStyles.bigTxt, {textAlign: 'center'}]}>
+        Sign-in to SocialBlox
+      </Text>
 
-            <View style={[GlobalStyle.inputWrapper]}>
-              <Text style={[GlobalStyle.labelStyle]}>Email</Text>
-              <TextInput
-                style={[GlobalStyle.inputStyle]}
-                onChangeText={handleChange('email')}
-              />
-            </View>
-            <View style={[GlobalStyle.inputWrapper]}>
-              <Text style={[GlobalStyle.labelStyle]}>Password</Text>
-              <TextInput
-                style={[GlobalStyle.inputStyle]}
-                onChangeText={handleChange('password')}
-              />
-            </View>
-            <View
-              style={[
-                GlobalStyle.row,
-                GlobalStyle.between,
-                GlobalStyle.alignCenter,
-              ]}>
-              <ButtonContain
-                label="Login"
-                style={{width: '48%'}}
-                action={() => handleSubmit()}
-              />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'space-between',
+          marginTop: 50,
+          paddingBottom: 30,
+        }}>
+        <View style={{width: '90%', alignSelf: 'center'}}>
+          <Text
+            style={[
+              {position: 'absolute', zIndex: 2, paddingLeft: 20},
+              activeInput
+                ? [GStyles.smallTxt, {top: 10}]
+                : [GStyles.normlTxt, {top: 28}],
+            ]}>
+            Enter your e-mail
+          </Text>
+          <TextInput
+            style={GStyles.flotingInput}
+            onFocus={() => setActiveInput(true)}
+            onChangeText={txt => {
+              setEmail(txt);
+              txt.length < 1 ? setActiveInput(false) : setActiveInput(true);
+            }}
+          />
+        </View>
 
-              <ButtonOutline
-                label="Register"
-                style={{width: '48%'}}
-                action={() => navigation.navigate('Register')}
-              />
-            </View>
-          </View>
-        )}
-      </Formik>
+        <View style={GStyles.px15}>
+          <ButtonPrimary label="Containue" action={() => _handleLogin()} />
+        </View>
+      </View>
     </View>
   );
 };
 
 export default Login;
-const internalStyle = StyleSheet.create({
-  imgStyle: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    resizeMode: 'cover',
-  },
-  cardStyle: {
-    backgroundColor: GlobalStyle.whiteColor,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingVertical: 15,
-  },
-});
