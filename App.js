@@ -4,18 +4,14 @@ import React from 'react';
 import Toast from 'react-native-toast-message';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import Login from './src/screens/Login';
-import LoginAuthenticator from './src/screens/LoginAuthenticator';
-import LoginOtp from './src/screens/LoginOtp';
-// import {store} from './src/redux/store';
-// import {Provider} from 'react-redux';
-// import Register from './src/screens/Register';
+import StartScreen from './src/StartScreen';
+import ResultScreen from './src/ResultScreen';
+import TestScreen from './src/TestScreen';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    // <Provider store={store}>
     <NavigationContainer>
       <StatusBar
         barStyle="light-content"
@@ -24,16 +20,12 @@ const App = () => {
         style={{height: 48}}
       />
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="LoginOtp" component={LoginOtp} />
-        <Stack.Screen
-          name="LoginAuthenticator"
-          component={LoginAuthenticator}
-        />
+        <Stack.Screen name="StartScreen" component={StartScreen} />
+        <Stack.Screen name="TestScreen" component={TestScreen} />
+        <Stack.Screen name="ResultScreen" component={ResultScreen} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>
-    // </Provider>
   );
 };
 

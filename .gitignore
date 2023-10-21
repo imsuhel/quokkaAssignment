@@ -63,4 +63,5 @@ yarn-error.log
 .metro-health-check*
 
 #old layouts
-srcOld
+/srcOld
+/srcOld2
